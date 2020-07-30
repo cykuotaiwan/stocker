@@ -2,7 +2,8 @@ from crawler import (
     crawlBasicInformation, crawlMonthlyRevenue,
     crawlBalanceSheet, crawlIncomeSheet, crawlCashFlow,
     crawlSummaryStockNoFromTWSE, crawlDailyPrice,
-    crawlStockCommodity, crawlDelistedCompany
+    crawlStockCommodity, crawlDelistedCompany,
+    crawlRSSCompanyNews
 )
 from datetime import datetime, timedelta, date
 import json
@@ -616,6 +617,32 @@ def getFinStatFromServer(
         return None
     else:
         return data.json()
+
+
+def updateRSSNews():
+    
+    pass
+
+
+def getRSSNews(companyID):
+    rss = crawlRSSCompanyNews(companyID)
+
+    news = []
+    for data in rss:
+        stock_id = companyID
+        info_type = 'news'
+        publish_date = datetime.fromtimestamp(time.mktime(data.published_parsed))
+        url = data.link
+        topic = data.title
+
+        news.append({
+            'stock_id': stock_id,
+            'info_type': info_type,
+            'publish_date': publish_date,
+            'url': url,
+            'topic': topic
+        })
+    return news
 
 
 def dailyRoutineWork():
