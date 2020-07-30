@@ -326,6 +326,37 @@ class Daily_Information(db.Model):
         setattr(self, key, value)
 
 
+class News_Info(db.Model):
+    __tablename__ = 'news_and_info'
+
+    stock_id = db.Column(
+        db.String(6), db.ForeignKey('basic_information.id'),
+        primary_key=True, nullable=False)
+    update_date = db.Column(
+        db.Date, nullable=False,
+        default=datetime.datetime.now().strftime("%Y-%m-%d"))
+    info_type = db.Column(
+        db.Enum('critical_info', 'news'), nullable=False)
+    publish_date = db.Column(db.Date, nullable=False)
+    url = db.Column(db.Text)
+    topic = db.Column(db.Text)
+
+    @property
+    def serialize(self):
+        res = {}
+        for attr, val in self.__dict__.items():
+            if attr == '_sa_instance_state':
+                continue
+            res[attr] = val
+        return res
+
+    def __getitem__(self, key):
+        return getattr(self, key)
+
+    def __setitem__(self, key, value):
+        setattr(self, key, value)
+
+
 class Stock_Commodity(db.Model):
     __tablename__ = 'stock_commodity'
 
